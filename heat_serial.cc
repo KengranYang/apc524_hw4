@@ -9,8 +9,8 @@ using namespace std;
 #include <fstream>
 
 int main(int argc, char const *argv[]) {
-  clock_t cpu_t;
-  cpu_t = clock();
+
+  // clock_t cpu_t = clock();
 
   // initialize the grid
   const int grid_size = atof(argv[1]) +2;
@@ -28,7 +28,7 @@ int main(int argc, char const *argv[]) {
 
   const double kappa = 1;
   const double total_time  = 0.5*M_PI*M_PI/kappa;
-  const double time_step = delta_x*delta_x/kappa/5.0; // make sure it is smaller than delta_x*delta_x/kappa/4
+  const double time_step = delta_x*delta_x/kappa/4.0*0.99; // make sure it is smaller than delta_x*delta_x/kappa/4
 
 
   // add boundary conditions here
@@ -83,8 +83,8 @@ int main(int argc, char const *argv[]) {
   }
 
   // record the time used
-  t = clock() - t;
-  printf("CPU time: %d (%f seconds).\n",t , ((float)t)/CLOCKS_PER_SEC);
+  // cpu_t = clock() - cpu_t;
+  // printf("CPU time: %lu (%f seconds).\n",cpu_t , ((float)cpu_t)/CLOCKS_PER_SEC);
 
 
   return 0;

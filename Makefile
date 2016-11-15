@@ -1,12 +1,17 @@
 
-objects =   hw4_serial.o
+objects =   heat_serial.o
 
 CXXFLAGS = -g -Wall
 
-all: hw4_serial
+all: heat_omp heat_serial
 
-hw4_serial : $(objects)
+heat_omp: heat_omp.cc
+	g++-6 -fopenmp -o $@ $^
+
+heat_serial : $(objects)
 	$(CXX) -o $@ $^
+
+
 
 clean:
 	$(RM) *.o
