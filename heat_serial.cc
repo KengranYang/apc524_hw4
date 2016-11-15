@@ -7,15 +7,21 @@ using namespace std;
 #define _USE_MATH_DEFINES // get value of pi
 #include <cmath>
 #include <fstream>
+#include <assert.h>
 
 int main(int argc, char const *argv[]) {
 
   // clock_t cpu_t = clock();
 
-  // initialize the grid
+  //obtain user inputs
+  if (argc!=2) {
+    printf("Incorrect input! Please follow the example: ./heat_omp 128 \n" );
+    assert(argc==2);
+  }
   const int grid_size = atof(argv[1]) +2;
   // printf("grid_size: %d\n", grid_size);
 
+  // initialize the grid
   typedef vector<double> Row;
   typedef vector<Row> Matrix;
 
