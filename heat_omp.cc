@@ -10,11 +10,12 @@ using namespace std;
 #include <fstream>
 #include <assert.h>
 #include <stdlib.h> /*atof*/
+#include <chrono>
 
 int main(int argc, char const *argv[]) {
   //record time elapsed
-  std::chrono::time_point<std::chrono::system_clock> start, end;
-  start = std::chrono::system_clock::now();
+  chrono::time_point<chrono::system_clock> start, end;
+  start = chrono::system_clock::now();
 
   //obtain user inputs
   if (argc!=3) {
@@ -47,12 +48,9 @@ int main(int argc, char const *argv[]) {
   // add time loop
   int t=0;
   while (t*time_step < total_time) {
-    // printf("t = %d\n", t);
 
     // add openMP directive here
-
     int part_rows= (grid_size-2)/nthr;
-    // printf("part_rows: %d\n", part_rows);
     int th_id;  //th_id holds the thread number for each thread
 
     omp_set_num_threads(nthr); //set the number of threads
@@ -71,8 +69,7 @@ int main(int argc, char const *argv[]) {
             T[i][grid_size-1] = T[i][1];
           }
           T[i][j] += time_step*kappa/delta_x/delta_x*(T[i-1][j]+T[i+1][j]+T[i][j-1]+T[i][j+1]-4*T[i][j]);
-          // printf("i=%f, j=%f\n",i,j );
-          // printf("%f\n", T[i][j]);
+
         }
       }
     }/* end of parallel section */
@@ -82,14 +79,16 @@ int main(int argc, char const *argv[]) {
 
   // output data
   ofstream myfile;
-  myfile.open ("example.txt");
+  char file_name [100];
+  sprintf (file_name, "heat_omp_%d.out", grid_size-2);
+  myfile.open (file_name);
   if (myfile.is_open()){
     myfile << "i j T\n";
     for (int i = 1; i < grid_size-1; ++i) {
       for (int j = 1; j < grid_size-1; ++j) {
-        // myfile <<  i << " "<<j<<" "<<" "<<T[i][j]<<"\n";
+
         myfile <<T[i][j]<<" ";
-        // printf("%f\n", T[i][j]);
+      
       }
       myfile <<"\n";
     }
