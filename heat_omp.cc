@@ -80,7 +80,7 @@ int main(int argc, char const *argv[]) {
   // output data
   ofstream myfile;
   char file_name [100];
-  sprintf (file_name, "heat_omp_%d.out", grid_size-2);
+  sprintf (file_name, "heat_omp_%d_%d.out", grid_size-2, nthr);
   myfile.open (file_name);
   if (myfile.is_open()){
     myfile << "\n";

@@ -20,10 +20,11 @@ int main(int argc, char *argv[]) {
   int id;
   int ierr;
   int p;
-  MPI_Status status;
   int tag;
-  // double wtime;
 
+
+  MPI_File file;
+  MPI_Status status;
 
 
 //
@@ -217,40 +218,48 @@ int main(int argc, char *argv[]) {
   }
 
 
-//   // specifying Offset for writing to file
-//    MPI_Offset offset = sizeof(double)*p*num_rows;
-//    MPI_File file;
-//
-//   MPI_File_open(MPI_COMM_WORLD, "final", MPI_MODE_CREATE|MPI_MODE_WRONLY,
-//                           MPI_INFO_NULL, &file);
-//
-// // Writing the result of each local array to the shared final file:
-//
-//   MPI_File_set_view (file, offset, MPI_DOUBLE, MPI_DOUBLE, NULL, MPI_INFO_NULL);
-//   MPI_File_write_all(file, &T[0], grid_size, MPI_DOUBLE, &status);
-//   MPI_File_close(&file);
 
-
-  // output data
-  ofstream myfile;
-  char file_name [100];
-  sprintf (file_name, "example_%d.txt", id);
-
-  myfile.open (file_name);
-  if (myfile.is_open()){
-    myfile << "id: " <<id << "\n" ;
-    for (int i = 1; i < grid_size-1; ++i) {
-      for (int j = 1; j < num_rows-1; ++j) {
-        // myfile <<  i << " "<<j<<" "<<" "<<T[i][j]<<"\n";
-        myfile <<T[i][j]<<" ";
-        // printf("%f\n", T[i][j]);
-      }
-      myfile <<"\n";
+  ierr = MPI_File_open(MPI_COMM_WORLD, "final", MPI_MODE_CREATE|MPI_MODE_WRONLY,
+                          MPI_INFO_NULL, &file);
+  if(ierr != MPI_SUCCESS){
+      printf ("Error starting MPI program. Terminating.\n");
+      MPI_Abort(MPI_COMM_WORLD, ierr);
     }
-    myfile.close();
-  }else{
-    printf("unable to open file.\n");
-  }
+
+// Writing the result of each local array to the shared final file:
+  // specifying Offset for writing to file
+  MPI_Offset offset = sizeof(double)*id*num_rows;
+
+  ierr = MPI_File_set_view (file, offset, MPI_DOUBLE, MPI_DOUBLE, "native", MPI_INFO_NULL);
+  if(ierr != MPI_SUCCESS){
+        cerr << "Problem setting process view" << endl;
+        return EXIT_FAILURE;
+    }
+
+  MPI_File_write_all(file, &T[0], grid_size, MPI_DOUBLE, &status);
+  MPI_File_close(&file);
+
+
+  // // output data
+  // ofstream myfile;
+  // char file_name [100];
+  // sprintf (file_name, "example_%d.txt", id);
+  //
+  // myfile.open (file_name);
+  // if (myfile.is_open()){
+  //   myfile << "id: " <<id << "\n" ;
+  //   for (int i = 1; i < grid_size-1; ++i) {
+  //     for (int j = 1; j < num_rows-1; ++j) {
+  //       // myfile <<  i << " "<<j<<" "<<" "<<T[i][j]<<"\n";
+  //       myfile <<T[i][j]<<" ";
+  //       // printf("%f\n", T[i][j]);
+  //     }
+  //     myfile <<"\n";
+  //   }
+  //   myfile.close();
+  // }else{
+  //   printf("unable to open file.\n");
+  // }
 
   //
   //  Terminate MPI.
