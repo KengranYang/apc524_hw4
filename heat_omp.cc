@@ -9,10 +9,12 @@ using namespace std;
 #include <cmath>
 #include <fstream>
 #include <assert.h>
+#include <stdlib.h> /*atof*/
 
 int main(int argc, char const *argv[]) {
-
-  // clock_t cpu_t = clock();
+  //record time elapsed
+  std::chrono::time_point<std::chrono::system_clock> start, end;
+  start = std::chrono::system_clock::now();
 
   //obtain user inputs
   if (argc!=3) {
@@ -97,9 +99,9 @@ int main(int argc, char const *argv[]) {
   }
 
   // record the time used
-  // cpu_t = clock() - cpu_t;
-  // printf("CPU time: %lu (%f seconds).\n",cpu_t , ((float)cpu_t)/CLOCKS_PER_SEC);
-
+  end = std::chrono::system_clock::now();
+  std::chrono::duration<double> elapsed_seconds = end-start;
+  printf("Time used: %fs.\n", elapsed_seconds.count());
 
   return 0;
 }

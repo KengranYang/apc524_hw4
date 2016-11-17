@@ -6,7 +6,7 @@ CXXFLAGS = -g -Wall
 all: heat_omp heat_serial
 
 heat_omp: heat_omp.cc
-	g++-6 -fopenmp -o $@ $^
+	g++ -fopenmp -o $@ $^
 
 heat_serial : $(objects)
 	$(CXX) -o $@ $^
