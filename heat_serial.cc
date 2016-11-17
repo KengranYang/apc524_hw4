@@ -9,11 +9,12 @@ using namespace std;
 #include <fstream>
 #include <assert.h>
 #include <stdlib.h> /*atof*/
+#include <chrono>
 
 int main(int argc, char const *argv[]) {
-
-  // clock_t cpu_t = clock();
-  time_t start = time(0);
+  //record time elapsed
+  std::chrono::time_point<std::chrono::system_clock> start, end;
+  start = std::chrono::system_clock::now();
 
   //obtain user inputs
   if (argc!=2) {
@@ -65,9 +66,12 @@ int main(int argc, char const *argv[]) {
 
   // output data
   ofstream myfile;
-  myfile.open ("example.txt");
+  char file_name [100];
+  sprintf (file_name, "heat_serial_%d.out", grid_size-2);
+
+  myfile.open (file_name);
   if (myfile.is_open()){
-    myfile << "i j T\n";
+    myfile << "\n";
     for (int i = 1; i < grid_size-1; ++i) {
       for (int j = 1; j < grid_size-1; ++j) {
 
@@ -82,11 +86,9 @@ int main(int argc, char const *argv[]) {
   }
 
   // record the time used
-  // cpu_t = clock() - cpu_t;
-  time_t end = time(0);
-  double time = difftime(end, start) * 1000.0;
-  // printf("CPU time: %lu (%f seconds).\n",cpu_t , ((float)cpu_t)/CLOCKS_PER_SEC);
-  printf("time: %f\n", time);
+  end = std::chrono::system_clock::now();
+  std::chrono::duration<double> elapsed_seconds = end-start;
+  printf("Time used: %fs.\n", elapsed_seconds.count());
 
   return 0;
 }
