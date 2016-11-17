@@ -83,12 +83,12 @@ int main(int argc, char const *argv[]) {
   sprintf (file_name, "heat_omp_%d.out", grid_size-2);
   myfile.open (file_name);
   if (myfile.is_open()){
-    myfile << "i j T\n";
+    myfile << "\n";
     for (int i = 1; i < grid_size-1; ++i) {
       for (int j = 1; j < grid_size-1; ++j) {
 
         myfile <<T[i][j]<<" ";
-      
+
       }
       myfile <<"\n";
     }
