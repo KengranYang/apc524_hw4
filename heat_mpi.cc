@@ -16,6 +16,8 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
 
+  double start_time = MPI_Wtime();//we're timing this run
+
   // clock_t cpu_t = clock();
   int id;
   int ierr;
@@ -265,15 +267,9 @@ int main(int argc, char *argv[]) {
   //  Terminate MPI.
   //
   MPI_Finalize ( );
-  // //
-  // //  Terminate.
-  // //
-  // if ( id == 0 )
-  // {
-  //   cout << "\n";
-  //   cout << "HELLO_MPI:\n";
-  //   cout << "  Normal end of execution.\n";
-  //   cout << "\n";
-  // }
+
+  // Report time consumed by each processor
+  printf("Time used: %fs.\n", MPI_Wtime()-start_time);
+
   return 0;
 }//end of main
