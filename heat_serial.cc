@@ -8,6 +8,7 @@ using namespace std;
 #include <cmath>
 #include <fstream>
 #include <assert.h>
+#include <stdlib.h> /*atof*/
 
 int main(int argc, char const *argv[]) {
 
