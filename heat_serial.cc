@@ -12,6 +12,7 @@ using namespace std;
 int main(int argc, char const *argv[]) {
 
   // clock_t cpu_t = clock();
+  time_t start = time(0);
 
   //obtain user inputs
   if (argc!=2) {
@@ -19,39 +20,31 @@ int main(int argc, char const *argv[]) {
     assert(argc==2);
   }
   const int grid_size = atof(argv[1]) +2;
-  // printf("grid_size: %d\n", grid_size);
 
   // initialize the grid
   typedef vector<double> Row;
   typedef vector<Row> Matrix;
 
   Matrix T(grid_size,Row(grid_size));
-  // printf("number of rows: %lu\n", T.size());
-  // printf("number of columns: %lu\n", T[0].size());
 
   // step size
   const double delta_x = M_PI/(grid_size-1);
 
   const double kappa = 1;
   const double total_time  = 0.5*M_PI*M_PI/kappa;
-  const double time_step = delta_x*delta_x/kappa/4.0*0.99; // make sure it is smaller than delta_x*delta_x/kappa/4
+  const double time_step =  delta_x*delta_x/kappa/4.0*0.99; // make sure it is smaller than delta_x*delta_x/kappa/4
 
 
   // add boundary conditions here
   for (int i = 0; i < grid_size; ++i) {
     T[0][i] = cos(i*delta_x)*cos(i*delta_x);
     T[grid_size-1][i] = sin(i*delta_x)*sin(i*delta_x);
-    // printf("i = %d\n", i);
-    // printf("%f\n", T[grid_size-1][i]);
-  }
-  // printf("0,0; pi,0: %f %f\n", T[0][0], T[0][grid_size-1]);
-  // printf("0,pi; pi,pi: %f %f\n", T[grid_size-1][0], T[grid_size-1][grid_size-1]);
 
+  }
 
   // add time loop
   int t=0;
   while (t*time_step < total_time) {
-    // printf("t = %d\n", t);
 
     // make it loop over the grid
     for (int i = 1; i < grid_size-1; ++i) {
@@ -63,8 +56,7 @@ int main(int argc, char const *argv[]) {
           T[i][grid_size-1] = T[i][1];
         }
         T[i][j] += time_step*kappa/delta_x/delta_x*(T[i-1][j]+T[i+1][j]+T[i][j-1]+T[i][j+1]-4*T[i][j]);
-        // printf("i=%f, j=%f\n",i,j );
-        // printf("%f\n", T[i][j]);
+
       }
     }
     ++t;
@@ -77,9 +69,9 @@ int main(int argc, char const *argv[]) {
     myfile << "i j T\n";
     for (int i = 1; i < grid_size-1; ++i) {
       for (int j = 1; j < grid_size-1; ++j) {
-        // myfile <<  i << " "<<j<<" "<<" "<<T[i][j]<<"\n";
+
         myfile <<T[i][j]<<" ";
-        // printf("%f\n", T[i][j]);
+
       }
       myfile <<"\n";
     }
@@ -90,8 +82,10 @@ int main(int argc, char const *argv[]) {
 
   // record the time used
   // cpu_t = clock() - cpu_t;
+  time_t end = time(0);
+  double time = difftime(end, start) * 1000.0;
   // printf("CPU time: %lu (%f seconds).\n",cpu_t , ((float)cpu_t)/CLOCKS_PER_SEC);
-
+  printf("time: %f\n", time);
 
   return 0;
 }
