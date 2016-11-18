@@ -1,7 +1,6 @@
 #include "mpi.h"
 #include <cstdio> //printf
 #include <stdlib.h> /*atof*/
-// #include <iostream>
 #include <vector>
 using namespace std;
 #define _USE_MATH_DEFINES // get value of pi
@@ -10,7 +9,6 @@ using namespace std;
 #include <assert.h>
 #include <string.h>
 // # include <cstdlib>
-// # include <ctime>
 // # include <iomanip>
 // # include <iostream>
 
@@ -18,12 +16,10 @@ int main(int argc, char *argv[]) {
 
   double start_time = MPI_Wtime();//we're timing this run
 
-  // clock_t cpu_t = clock();
   int id;
   int ierr;
   int p;
   int tag;
-
 
   MPI_File file;
   MPI_Status status;
@@ -56,8 +52,7 @@ int main(int argc, char *argv[]) {
   }
   const int grid_size = atoi(argv[1]) +2;
   const int num_rows = (grid_size-2)/p+2;
-  // printf("grid_size: %d\n", grid_size);
-
+  
 
   // initialize the grid
   typedef vector<double> Row;
