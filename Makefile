@@ -4,7 +4,7 @@ objects =   heat_serial.o
 CXXFLAGS = -g -Wall -std=c++0x
 OMPFLAGS = -std=c++0x -fopenmp
 
-all: heat_omp heat_serial
+all: heat_omp heat_serial heat_mpi
 
 heat_omp: heat_omp.cc
 	g++ $(OMPFLAGS) -o $@ $^
@@ -12,7 +12,8 @@ heat_omp: heat_omp.cc
 heat_serial : $(objects)
 	$(CXX) -o $@ $^
 
-
+heat_mpi:heat_mpi.cc
+	mpicc -o $@ $^
 
 clean:
 	$(RM) *.o
