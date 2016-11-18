@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
   }
   const int grid_size = atoi(argv[1]) +2;
   const int num_rows = (grid_size-2)/p+2;
-  
+
 
   // initialize the grid
   typedef vector<double> Row;
@@ -240,7 +240,7 @@ int main(int argc, char *argv[]) {
   // output data
   ofstream myfile;
   char file_name [100];
-  sprintf (file_name, "heat_mpi_%d_%d.txt", grid_size-2, id);
+  sprintf (file_name, "heat_mpi_%d_%d.out", grid_size-2, id);
 
   myfile.open (file_name);
   if (myfile.is_open()){
