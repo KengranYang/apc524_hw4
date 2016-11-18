@@ -1,0 +1,23 @@
+#!/bin/bash
+# parallel job using 4 processors. and runs for 1 hour (max)
+#SBATCH -N 1 # node count
+#SBATCH --ntasks-per-node=4
+#SBATCH -t 01:00:00
+# sends mail when process begins, and
+# when it ends. Make sure you define your email
+#SBATCH --mail-type=begin
+#SBATCH --mail-type=end
+#SBATCH --mail-type=fail
+#SBATCH --mail-user=kengrany@princeton.edu
+
+# Load openmpi environment
+module load openmpi
+
+# Make sure you are in the correct directory
+cd ~/apc524_hw4/
+
+for nx in 128 256 512
+do
+    ./heat_omp $nx 4 > heat_omp.$nx.4.out
+    srun ./heat_mpi $nx > heat_mpi.$nx.4.out
+done
