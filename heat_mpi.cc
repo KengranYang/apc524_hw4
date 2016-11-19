@@ -135,51 +135,67 @@ int main(int argc, char *argv[]) {
 
     //send colum(num_rows-2) of proc.(p-1) to colum(0) of proc. 0
     //send column(1) of proc. 0 to column(num_rows-1) of proc. p-1
-    if (id==p-1) {
-      Row temp_send(grid_size);
-      Row col_right(grid_size);
-      for (int i = 0; i < grid_size; i++) {
-        temp_send[i] = T[i][num_rows-2];
+    if (p!=1) {
+        if (id==p-1) {
+        Row temp_send(grid_size);
+        Row col_right(grid_size);
+        for (int i = 0; i < grid_size; i++) {
+          temp_send[i] = T[i][num_rows-2];
 
+        }
+        tag = 3;
+        MPI_Send(&temp_send[0], grid_size, MPI_DOUBLE, 0, tag, MPI_COMM_WORLD);
+        MPI_Recv ( &col_right[0], grid_size,  MPI_DOUBLE, 0, tag, MPI_COMM_WORLD, &status );
+
+
+        for (int i = 0; i < grid_size; i++) {
+          T[i][num_rows-1] = col_right[i] ;
+
+        }
       }
-      tag = 3;
-      MPI_Send(&temp_send[0], grid_size, MPI_DOUBLE, 0, tag, MPI_COMM_WORLD);
-      MPI_Recv ( &col_right[0], grid_size,  MPI_DOUBLE, 0, tag, MPI_COMM_WORLD, &status );
+      if (id==0) {
+        Row col_left(grid_size);
+        Row temp_send(grid_size);
+        for (int i = 0; i < grid_size; i++) {
+          temp_send[i] = T[i][1];
 
+        }
+        tag = 3;
+        MPI_Recv ( &col_left[0], grid_size,  MPI_DOUBLE, p-1, tag, MPI_COMM_WORLD, &status );
+        MPI_Send(&temp_send[0], grid_size, MPI_DOUBLE, p-1, tag, MPI_COMM_WORLD);
 
-      for (int i = 0; i < grid_size; i++) {
-        T[i][num_rows-1] = col_right[i] ;
+        for (int i = 0; i < grid_size; i++) {
+          T[i][0] = col_left[i] ;
 
+        }
       }
-    }
-    if (id==0) {
-      Row col_left(grid_size);
-      Row temp_send(grid_size);
-      for (int i = 0; i < grid_size; i++) {
-        temp_send[i] = T[i][1];
+      // make it loop over the grid
+      for (int i = 1; i < grid_size-1; ++i) {
 
+        for (int j = 1; j < num_rows-1; ++j) {
+
+          T[i][j] += time_step*kappa/delta_x/delta_x*(T[i-1][j]+T[i+1][j]+T[i][j-1]+T[i][j+1]-4*T[i][j]);
+
+          // printf("T[%d][%d]: %f  ",i,j, T[i][j]);
+        }
+        // printf("\n");
       }
-      tag = 3;
-      MPI_Recv ( &col_left[0], grid_size,  MPI_DOUBLE, p-1, tag, MPI_COMM_WORLD, &status );
-      MPI_Send(&temp_send[0], grid_size, MPI_DOUBLE, p-1, tag, MPI_COMM_WORLD);
+    }//end if
+    else{
+      for (int i = 1; i < grid_size-1; ++i) {
 
-      for (int i = 0; i < grid_size; i++) {
-        T[i][0] = col_left[i] ;
+        for (int j = 1; j < grid_size-1; ++j) {
+          if (j==1) {
+            T[i][0] = T[i][grid_size-2];
+          }else if (j == grid_size-2) {
+            T[i][grid_size-1] = T[i][1];
+          }
+          T[i][j] += time_step*kappa/delta_x/delta_x*(T[i-1][j]+T[i+1][j]+T[i][j-1]+T[i][j+1]-4*T[i][j]);
 
+        }
       }
-    }
+    }//end else
 
-    // make it loop over the grid
-    for (int i = 1; i < grid_size-1; ++i) {
-
-      for (int j = 1; j < num_rows-1; ++j) {
-
-        T[i][j] += time_step*kappa/delta_x/delta_x*(T[i-1][j]+T[i+1][j]+T[i][j-1]+T[i][j+1]-4*T[i][j]);
-
-        // printf("T[%d][%d]: %f  ",i,j, T[i][j]);
-      }
-      // printf("\n");
-    }
 
     ++t;
   }//end of while loop
