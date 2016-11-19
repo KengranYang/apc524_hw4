@@ -19,5 +19,5 @@ cd ~/apc524_hw4/
 for nx in 128 256 512
 do
     ./heat_omp $nx 8 > heat_omp.$nx.8.out
-    srun ./heat_mpi $nx > heat_mpi.$nx.8.out
+    # srun ./heat_mpi $nx > heat_mpi.$nx.8.out
 done

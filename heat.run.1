@@ -16,7 +16,7 @@ module load openmpi
 # Make sure you are in the correct directory
 cd ~/apc524_hw4/
 
-for nx in 128
+for nx in 128 256 512
 do
     ./heat_serial $nx > heat_serial.$nx.out
     ./heat_omp $nx 1 > heat_omp.$nx.1.out
