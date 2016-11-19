@@ -240,7 +240,7 @@ int main(int argc, char *argv[]) {
   // output data
   ofstream myfile;
   char file_name [100];
-  sprintf (file_name, "heat_mpi_%d_%d.out", grid_size-2, id);
+  sprintf (file_name, "heat_mpi_%d_%d.dat", grid_size-2, id);
 
   myfile.open (file_name);
   if (myfile.is_open()){

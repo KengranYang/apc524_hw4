@@ -67,7 +67,7 @@ int main(int argc, char const *argv[]) {
   // output data
   ofstream myfile;
   char file_name [100];
-  sprintf (file_name, "heat_serial_%d.out", grid_size-2);
+  sprintf (file_name, "heat_serial_%d.dat", grid_size-2);
 
   myfile.open (file_name);
   if (myfile.is_open()){
