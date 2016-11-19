@@ -64,6 +64,9 @@ int main(int argc, char const *argv[]) {
     ++t;
   }//end while loop
 
+  // create a variable to store the sum of temperature
+  double T_tot = 0;
+
   // output data
   ofstream myfile;
   char file_name [100];
@@ -76,7 +79,7 @@ int main(int argc, char const *argv[]) {
       for (int j = 1; j < grid_size-1; ++j) {
 
         myfile <<T[i][j]<<" ";
-
+        T_tot += T[i][j];
       }
       myfile <<"\n";
     }
@@ -84,6 +87,8 @@ int main(int argc, char const *argv[]) {
   }else{
     printf("unable to open file.\n");
   }
+
+  printf("Average temperature: %f\n", T_tot/pow((grid_size-2),2));
 
   // record the time used
   end = std::chrono::system_clock::now();
