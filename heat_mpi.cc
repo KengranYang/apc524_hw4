@@ -60,17 +60,6 @@ int main(int argc, char *argv[]) {
 
   Matrix T((grid_size),Row(num_rows));
 
-
-    // for (int j = 0; j < num_rows; j++) {
-    //   T[1][j]=id;
-    //   // printf("i, j: %d %d\n",i,j );
-    //   // printf("T[i][j]: %f\n", T[i][j]);
-    //   // T[i][j] = 0;
-    // }
-
-  // printf("number of rows: %lu\n", T.size());
-  // printf("number of columns: %lu\n", T[0].size());
-
   // step size
   const double delta_x = M_PI/(grid_size-1);
   // printf("delta_x: %f\n", delta_x);
@@ -78,7 +67,6 @@ int main(int argc, char *argv[]) {
   const double kappa = 1;
   const double total_time  = 0.5*M_PI*M_PI/kappa;
   const double time_step =  delta_x*delta_x/kappa/4.0*0.99; // make sure it is smaller than delta_x*delta_x/kappa/4
-  // printf("total_time: %f\n", total_time);
 
   // add boundary conditions here
   for (int j = 0; j < p; j++) { //loop over the number of processors
@@ -92,8 +80,6 @@ int main(int argc, char *argv[]) {
       }
     }
   }//end of for loop
-  // printf("0,0; pi,0: %f %f\n", T[0][0], T[0][num_rows-1]);
-  // printf("0,pi; pi,pi: %f %f\n", T[num_rows-1][0], T[num_rows-1][num_rows-1]);
 
   // add time loop
   int t=0;
@@ -104,9 +90,9 @@ int main(int argc, char *argv[]) {
   if (id > 0) {
     Row temp_send_1(grid_size);  //temp vector to store the boundary column for send and receive
     for (int i = 0; i < grid_size; i++) {
-      /* code */
+
       temp_send_1[i] = T[i][1];
-      // printf("temp_send_1: %f\n", temp_send_1[i]);
+
     }
     tag = 1;
     MPI_Send(&temp_send_1[0], grid_size, MPI_DOUBLE, id-1, tag, MPI_COMM_WORLD);
@@ -116,10 +102,10 @@ int main(int argc, char *argv[]) {
     Row col_right(grid_size);
     tag = 1;
     MPI_Recv ( &col_right[0], grid_size,  MPI_DOUBLE, id+1, tag, MPI_COMM_WORLD, &status );
-    // printf(" col_right: %f\n", col_right[grid_size-1]);
+
     for (int i = 0; i < grid_size; i++) {
       T[i][num_rows-1] = col_right[i] ;
-      // printf("T[%d][num_rows-1]: %f\n", i,T[i][num_rows-1]);
+
     }
   }
 
@@ -129,7 +115,7 @@ int main(int argc, char *argv[]) {
     Row temp_send_num_rows_2(grid_size);
     for (int i = 0; i < grid_size; i++) {
       temp_send_num_rows_2[i] = T[i][num_rows-2];
-      // printf("temp_send_1: %f\n", temp_send_1[i]);
+
     }
     tag = 2;
     MPI_Send(&temp_send_num_rows_2[0], grid_size, MPI_DOUBLE, id+1, tag, MPI_COMM_WORLD);
@@ -138,10 +124,10 @@ int main(int argc, char *argv[]) {
     Row col_left(grid_size);
     tag = 2;
     MPI_Recv ( &col_left[0], grid_size,  MPI_DOUBLE, id-1, tag, MPI_COMM_WORLD, &status );
-    // printf(" col_left: %f\n", col_left[grid_size-1]);
+
     for (int i = 0; i < grid_size; i++) {
       T[i][0] = col_left[i] ;
-      // printf("T[%d][0]: %f\n", i,T[i][0]);
+
     }
   }
 
@@ -154,16 +140,16 @@ int main(int argc, char *argv[]) {
       Row col_right(grid_size);
       for (int i = 0; i < grid_size; i++) {
         temp_send[i] = T[i][num_rows-2];
-        // printf("temp_send_1: %f\n", temp_send_1[i]);
+
       }
       tag = 3;
       MPI_Send(&temp_send[0], grid_size, MPI_DOUBLE, 0, tag, MPI_COMM_WORLD);
       MPI_Recv ( &col_right[0], grid_size,  MPI_DOUBLE, 0, tag, MPI_COMM_WORLD, &status );
 
-      // printf(" col_right: %f\n", col_right[grid_size-1]);
+
       for (int i = 0; i < grid_size; i++) {
         T[i][num_rows-1] = col_right[i] ;
-        // printf("T[%d][0]: %f\n", i,T[i][0]);
+
       }
     }
     if (id==0) {
@@ -171,15 +157,15 @@ int main(int argc, char *argv[]) {
       Row temp_send(grid_size);
       for (int i = 0; i < grid_size; i++) {
         temp_send[i] = T[i][1];
-        // printf("temp_send_1: %f\n", temp_send_1[i]);
+
       }
       tag = 3;
       MPI_Recv ( &col_left[0], grid_size,  MPI_DOUBLE, p-1, tag, MPI_COMM_WORLD, &status );
       MPI_Send(&temp_send[0], grid_size, MPI_DOUBLE, p-1, tag, MPI_COMM_WORLD);
-      // printf(" col_left: %f\n", col_left[grid_size-1]);
+
       for (int i = 0; i < grid_size; i++) {
         T[i][0] = col_left[i] ;
-        // printf("T[%d][0]: %f\n", i,T[i][0]);
+
       }
     }
 
@@ -205,9 +191,9 @@ int main(int argc, char *argv[]) {
 
     for (int j = 1; j < num_rows-1; ++j) {
       T_sum_processor += T[i][j];
-      // printf("T[%d][%d]: %f  ",i,j, T[i][j]);
+
     }
-    // printf("\n");
+
   }
   MPI_Allreduce (&T_sum_processor, &T_sum_all, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
   if (id==0) {
@@ -240,7 +226,7 @@ int main(int argc, char *argv[]) {
   // output data
   ofstream myfile;
   char file_name [100];
-  sprintf (file_name, "heat_mpi_%d_%d.dat", grid_size-2, id);
+  sprintf (file_name, "heat_mpi_%d_%d_%d.dat", grid_size-2, p, id);
 
   myfile.open (file_name);
   if (myfile.is_open()){
